@@ -10,19 +10,17 @@ CPU: Minimum of 1/2 core.
 Memory: 2 to 4 GB.
 Storage: SSD or NVMe with at least 5GB of space.
 ```
+# Prerequisites
+Before you start, ensure you have docker compose installed.
 
 ### Deployment - Read Carefully! 
 ## Step 1: 
 ```bash
 git clone https://github.com/allora-network/basic-coin-prediction-node
 ```
-```bash
-cd basic-coin-prediction-node
-```
-
 ## Step 2: 
 ```bash
-apt install wget
+cd basic-coin-prediction-node
 ```
 ## Step 3: Copy and Populate Configuration 
 ```bash
