@@ -46,7 +46,7 @@ sudo rm -rf config.json && sudo nano config.json
   },
   "worker": [
     {
-      "topicId": 5,
+      "topicId": 1,
       "inferenceEntrypointName": "api-worker-reputer",
       "loopSeconds": 5,
       "parameters": {
@@ -55,7 +55,7 @@ sudo rm -rf config.json && sudo nano config.json
       }
     },
     {
-      "topicId": 6,
+      "topicId": 2,
       "inferenceEntrypointName": "api-worker-reputer",
       "loopSeconds": 5,
       "parameters": {
