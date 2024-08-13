@@ -31,32 +31,40 @@ Edit addressKeyName & addressRestoreMnemonic & Copy / Paste inside config.json
 ```bash
 sudo rm -rf config.json && sudo nano config.json
 ```
-See example here:
-```
+```bash
 {
-    "wallet": {
-        "addressKeyName": "YOUR_WALLET_NAME",
-        "addressRestoreMnemonic": "SEED_PHASE",
-        "alloraHomeDir": "",
-        "gas": "1000000",
-        "gasAdjustment": 1.0,
-        "nodeRpc": "https://sentries-rpc.testnet-1.testnet.allora.network",
-        "maxRetries": 1,
-        "delay": 1,
-        "submitTx": false
-    },
-    "worker": [
-        {
-            "topicId": 1,
-            "inferenceEntrypointName": "api-worker-reputer",
-            "loopSeconds": 5,
-            "parameters": {
-                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
-                "Token": "ETH"
-            }
- },
+  "wallet": {
+    "addressKeyName": "YOUR_WALLET_NAME",
+    "addressRestoreMnemonic": "SEED_PHASE",
+    "alloraHomeDir": "",
+    "gas": "1000000",
+    "gasAdjustment": 1.0,
+    "nodeRpc": "https://sentries-rpc.testnet-1.testnet.allora.network/",
+    "maxRetries": 1,
+    "delay": 1,
+    "submitTx": false
+  },
+  "worker": [
     {
-      "topicId": 2,
+      "topicId": 5,
+      "inferenceEntrypointName": "api-worker-reputer",
+      "loopSeconds": 5,
+      "parameters": {
+        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
+        "Token": "ETH"
+      }
+    },
+    {
+      "topicId": 6,
+      "inferenceEntrypointName": "api-worker-reputer",
+      "loopSeconds": 5,
+      "parameters": {
+        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
+        "Token": "ETH"
+      }
+    },
+    {
+      "topicId": 7,
       "inferenceEntrypointName": "api-worker-reputer",
       "loopSeconds": 5,
       "parameters": {
@@ -66,6 +74,7 @@ See example here:
     }
   ]
 }
+
 
 ```
 
