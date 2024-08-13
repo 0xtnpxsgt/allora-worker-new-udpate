@@ -35,8 +35,8 @@ See example here:
 ```
 {
     "wallet": {
-        "addressKeyName": "testkey",
-        "addressRestoreMnemonic": "SEED PHASE",
+        "addressKeyName": "YOUR_WALLET_NAME",
+        "addressRestoreMnemonic": "SEED_PHASE",
         "alloraHomeDir": "",
         "gas": "1000000",
         "gasAdjustment": 1.0,
