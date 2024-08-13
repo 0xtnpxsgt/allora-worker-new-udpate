@@ -1,4 +1,4 @@
-# allora-worker-new-udpate
+# Allora-worker-new-udpate
 Allora Worker Chronos Model
 
 - You must need to buy a VPS for running Allora Worker
