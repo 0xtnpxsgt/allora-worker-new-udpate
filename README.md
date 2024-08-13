@@ -180,7 +180,7 @@ transformers[torch]
 pandas
 git+https://github.com/amazon-science/chronos-forecasting.git
 ```
-## Step 8: Create requirments.txt
+## Step 8: Export Variables
 ```bash
 chmod +x init.config
 ./init.config
