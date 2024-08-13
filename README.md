@@ -27,23 +27,23 @@ cd basic-coin-prediction-node
 cp config.example.json config.json
 ```
 ## Step 4: 
-Edit addressKeyName & addressRestoreMnemonic 
+Edit addressKeyName & addressRestoreMnemonic & Copy / Paste inside config.json
 ```bash
 nano config.json
 ```
 See example here:
 ```
 {
-  "wallet": {
-    "addressKeyName": "YOU WALLET NAME",
-    "addressRestoreMnemonic": "SEED PHRASE",
-    "alloraHomeDir": "",
-    "gas": "1000000",
-    "gasAdjustment": 1.0,
-    "nodeRpc": "https://sentries-rpc.testnet-1.testnet.allora.network/",
-    "maxRetries": 1,
-    "delay": 1,
-    "submitTx": false
+    "wallet": {
+        "addressKeyName": "testkey",
+        "addressRestoreMnemonic": "flavor start aunt empty actress boy park broken scrap oil easily grab home team taxi shift dilemma chase indicate myth near wrong ship begin",
+        "alloraHomeDir": "",
+        "gas": "1000000",
+        "gasAdjustment": 1.0,
+        "nodeRpc": "https://sentries-rpc.testnet-1.testnet.allora.network",
+        "maxRetries": 1,
+        "delay": 1,
+        "submitTx": false
     },
     "worker": [
         {
@@ -54,9 +54,19 @@ See example here:
                 "InferenceEndpoint": "http://inference:8000/inference/{Token}",
                 "Token": "ETH"
             }
-        }
-    ]
+ },
+    {
+      "topicId": 2,
+      "inferenceEntrypointName": "api-worker-reputer",
+      "loopSeconds": 5,
+      "parameters": {
+        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
+        "Token": "ETH"
+      }
+    }
+  ]
 }
+
 ```
 
 ## Step 5: Edit App.py
