@@ -36,7 +36,7 @@ See example here:
 {
     "wallet": {
         "addressKeyName": "testkey",
-        "addressRestoreMnemonic": "flavor start aunt empty actress boy park broken scrap oil easily grab home team taxi shift dilemma chase indicate myth near wrong ship begin",
+        "addressRestoreMnemonic": "SEED PHASE",
         "alloraHomeDir": "",
         "gas": "1000000",
         "gasAdjustment": 1.0,
