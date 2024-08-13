@@ -27,7 +27,7 @@ cd basic-coin-prediction-node
 cp config.example.json config.json
 ```
 ## Step 4: 
-Add your wallet name, mnemonic and the rpc url: https://sentries-rpc.testnet-1.testnet.allora.network 
+Edit addressKeyName & addressRestoreMnemonic 
 ```bash
 nano config.json
 ```
