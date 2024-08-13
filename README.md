@@ -29,7 +29,7 @@ cp config.example.json config.json
 ## Step 4: 
 Edit addressKeyName & addressRestoreMnemonic & Copy / Paste inside config.json
 ```bash
-nano config.json
+sudo rm -rf config.json && sudo nano config.json
 ```
 See example here:
 ```
