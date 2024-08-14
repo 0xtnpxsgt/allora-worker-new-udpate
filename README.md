@@ -1,5 +1,5 @@
 # Allora-3-Workers-New-Udpate 
-Allora Worker Chronos Model (Topic used: ETH Topic 1 - 2 - 7)
+(Topic used: ETH Topic 1 - 2 - 7)
 
 - You must need to buy a VPS for running Allora Worker
 - You can buy from : Contabo
