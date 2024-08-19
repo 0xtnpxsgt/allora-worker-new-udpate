@@ -277,7 +277,7 @@ requests==2.31.0
 plotly
 prophet
 ```
-## Step 9: Build
+## Step 6: Build
 ```bash
 docker compose up --build -d
 ```
