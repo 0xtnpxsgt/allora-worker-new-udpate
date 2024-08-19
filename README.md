@@ -1,5 +1,4 @@
-# Allora-3-Workers-New-Udpate 
-(Topic used: ETH Topic 1 - 2 - 7)
+# Allora-Worker - Propher Model
 
 - You must need to buy a VPS for running Allora Worker
 - You can buy from : Contabo
@@ -37,89 +36,248 @@ sudo usermod -aG docker $USER
 ### Deployment - Read Carefully! 
 ## Step 1: 
 ```bash
-git clone https://github.com/allora-network/basic-coin-prediction-node
+git clone https://github.com/allora-network/allora-huggingface-walkthrough
+cd allora-huggingface-walkthrough
 ```
 ## Step 2: 
 ```bash
-cd basic-coin-prediction-node
-```
-## Step 3: Copy and Populate Configuration 
-```bash
 cp config.example.json config.json
+nano config.json
 ```
-## Step 4: 
-Edit addressKeyName & addressRestoreMnemonic & Copy / Paste inside config.json
-```bash
-sudo rm -rf config.json && sudo nano config.json
-```
+
+####  Edit addressKeyName & addressRestoreMnemonic / Copy & Paste Inside config.json
+#### Optional: RPC :  https://sentries-rpc.testnet-1.testnet.allora.network/
 ```bash
 {
-  "wallet": {
-    "addressKeyName": "YOUR_WALLET_NAME",
-    "addressRestoreMnemonic": "SEED_PHASE",
-    "alloraHomeDir": "",
-    "gas": "1000000",
-    "gasAdjustment": 1.0,
-    "nodeRpc": "https://sentries-rpc.testnet-1.testnet.allora.network/",
-    "maxRetries": 1,
-    "delay": 1,
-    "submitTx": false
-  },
-  "worker": [
-    {
-      "topicId": 1,
-      "inferenceEntrypointName": "api-worker-reputer",
-      "loopSeconds": 5,
-      "parameters": {
-        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
-        "Token": "ETH"
-      }
+    "wallet": {
+        "addressKeyName": "YOUR_WALLET_NAME",
+        "addressRestoreMnemonic": "SEED_PHRASE",
+        "alloraHomeDir": "/root/.allorad",
+        "gas": "1000000",
+        "gasAdjustment": 1.0,
+        "nodeRpc": "https://allora-rpc.testnet-1.testnet.allora.network/",
+        "maxRetries": 1,
+        "delay": 1,
+        "submitTx": false
     },
-    {
-      "topicId": 2,
-      "inferenceEntrypointName": "api-worker-reputer",
-      "loopSeconds": 5,
-      "parameters": {
-        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
-        "Token": "ETH"
-      }
-    },
-    {
-      "topicId": 7,
-      "inferenceEntrypointName": "api-worker-reputer",
-      "loopSeconds": 5,
-      "parameters": {
-        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
-        "Token": "ETH"
-      }
-    }
-  ]
+    "worker": [
+        {
+            "topicId": 1,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 1,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 2,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 3,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 3,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "BTC"
+            }
+        },
+        {
+            "topicId": 4,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 2,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "BTC"
+            }
+        },
+        {
+            "topicId": 5,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 4,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "SOL"
+            }
+        },
+        {
+            "topicId": 6,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "SOL"
+            }
+        },
+        {
+            "topicId": 7,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 2,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 8,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 3,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "BNB"
+            }
+        },
+        {
+            "topicId": 9,
+            "inferenceEntrypointName": "api-worker-reputer",
+            "loopSeconds": 5,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ARB"
+            }
+        }
+        
+    ]
 }
-
-
 ```
-
-## Step 5: Export Variables
+## Step 3: Export 
 ```bash
 chmod +x init.config
 ./init.config
 ```
-## Step 9: Docker Build - This will take time
-
+## Step 4: Edit App.py
+- Register on Coingecko https://www.coingecko.com/en/developers/dashboard & Create Demo API KEY
+- Copy & Replace API with your `COINGECKO API` , then save `Ctrl+X Y ENTER`.
 ```bash
-docker compose up --build
+nano app.py
+```
+```bash
+from flask import Flask, Response
+import requests
+import json
+import pandas as pd
+from prophet import Prophet
+
+# create our Flask app
+app = Flask(__name__)
+
+def get_coingecko_url(token):
+    base_url = "https://api.coingecko.com/api/v3/coins/"
+    token_map = {
+        'ETH': 'ethereum',
+        'SOL': 'solana',
+        'BTC': 'bitcoin',
+        'BNB': 'binancecoin',
+        'ARB': 'arbitrum'
+    }
+    
+    token = token.upper()
+    if token in token_map:
+        url = f"{base_url}{token_map[token]}/market_chart?vs_currency=usd&days=30&interval=daily"
+        return url
+    else:
+        raise ValueError("Unsupported token")
+
+def handle_outliers(df):
+    # Removing outliers using IQR (Interquartile Range) method
+    Q1 = df['y'].quantile(0.25)
+    Q3 = df['y'].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    df = df[(df['y'] >= lower_bound) & (df['y'] <= upper_bound)]
+    return df
+
+# define our endpoint
+@app.route("/inference/<string:token>")
+def get_inference(token):
+    """Generate inference for given token."""
+    try:
+        # Get the data from Coingecko
+        url = get_coingecko_url(token)
+    except ValueError as e:
+        return Response(json.dumps({"error": str(e)}), status=400, mimetype='application/json')
+
+    headers = {
+        "accept": "application/json",
+        "x-cg-demo-api-key": "CG-XXXXXXXXXXXXXXXXXXXXXXXXX"  # Replace with your API key
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        df = pd.DataFrame(data["prices"])
+        df.columns = ["ds", "y"]
+        df["ds"] = pd.to_datetime(df["ds"], unit='ms')
+        df = df[:-1]  # Removing today's price
+        df = handle_outliers(df)  # Handling outliers
+        print(df.tail(5))
+    else:
+        return Response(json.dumps({"Failed to retrieve data from the API": str(response.text)}),
+                        status=response.status_code,
+                        mimetype='application/json')
+
+    # Fit the model using Prophet with custom parameters
+    model = Prophet(
+        seasonality_mode='multiplicative', 
+        changepoint_prior_scale=0.05,
+        seasonality_prior_scale=10.0,
+        holidays_prior_scale=10.0
+    )
+
+    # Adding custom weekly seasonality
+    model.add_seasonality(name='weekly', period=7, fourier_order=3)
+    model.fit(df)
+
+    # Make a forecast for the next 7 days
+    future = model.make_future_dataframe(periods=7)
+    forecast = model.predict(future)
+
+    # Get the forecasted values for the next 7 days
+    forecasted_values = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(7).to_dict(orient='records')
+    print(forecasted_values)  # Print the forecasted values
+
+    return Response(json.dumps(forecasted_values), status=200, mimetype='application/json')
+
+# run our Flask app
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8002, debug=True)
+
+
 ```
 
-if the logs shows like this, then your allora worker is running successfully. 
-
-<img width="1535" alt="Screenshot 1403-05-23 at 7 21 56 PM" src="https://github.com/user-attachments/assets/602d31d0-48b4-4666-bf55-feaa3d2ab3ff">
-
-## Testing
+## Step 5: Edit requirements.txt
 ```bash
-curl http://localhost:8000/inference/<token>
+nano requirements.txt
+```
+#- Copy & Paste, then save `Ctrl+X Y ENTER`.
+
+```
+flask[async]
+gunicorn[gthread]
+transformers[torch]
+pandas
+torch==2.0.1 
+python-dotenv
+requests==2.31.0
+plotly
+prophet
+```
+## Step 9: Build
+```bash
+docker compose up --build -d
 ```
 
-Congrats!
+## Check your wallet here: http://worker-tx.nodium.xyz/
+![image](https://github.com/user-attachments/assets/6e9ce7fd-fdf5-40d2-98f9-d20eb8486fce)
+
+Congrats! Join our Discord if you having problem with the setup https://discord.gg/r6PPSjRZec
 
 
 
