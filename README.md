@@ -1,4 +1,4 @@
-# Allora-Worker - Propher Model
+# Allora-Worker - Prophet Model
 
 - You must need to buy a VPS for running Allora Worker
 - You can buy from : Contabo
@@ -33,6 +33,14 @@ docker-compose --version
 sudo groupadd docker
 sudo usermod -aG docker $USER
 ```
+
+Clean Old Docker
+```
+docker compose down -v
+docker container prune
+cd $HOME && rm -rf allora-huggingface-walkthrough
+```
+
 ### Deployment - Read Carefully! 
 ## Step 1: 
 ```bash
