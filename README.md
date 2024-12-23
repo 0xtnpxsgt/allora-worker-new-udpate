@@ -11,20 +11,20 @@ CPU: Minimum of 1/2 core.
 Memory: 2 to 4 GB.
 Storage: SSD or NVMe with at least 5GB of space.
 ```
-Clone repository 
+- Clone repository 
 
 ```
 cd $HOME
 git clone https://github.com/0xtnpxsgt/allora-worker-new-udpate.git
 cd allora-worker-new-udpate
 ```
-Edit config.json file
+- Edit config.json file
 
 ```
  nano config.json
 ```
-Copy & Paste Inside
-Change WalletName and Seedphrase
+- Copy & Paste Inside
+- Change WalletName and Seedphrase
 
 ```
 {
@@ -76,21 +76,20 @@ Change WalletName and Seedphrase
     ]
 }
 ```
-Export Variables
+- Export Variables
 
-run command
+- run command
 ```
 chmod +x init.config
 ./init.config 
 ```
-Deploy the Node
-run command
+- Deploy the Node
+- run command
 ```
 docker compose pull
 docker compose up --build -d
 ```
-to check logs 
-run command
+- to check logs run command
 ```
 docker compose logs -f worker
 ```
