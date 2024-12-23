@@ -2,7 +2,7 @@ Installation Setup
 
 You should buy VPS which is fulfilling all these requirements :
 
-Full Documentatio: https://docs.allora.network/devs/workers/walkthroughs/walkthrough-price-prediction-worker
+Full Documentatio: https://docs.allora.network/devs/workers/walkthroughs/walkthrough-hugging-face-worker
 
 # System requirements
 Copy
