@@ -17,7 +17,6 @@ cd $HOME
 git clone https://github.com/0xtnpxsgt/allora-worker-new-udpate.git
 cd allora-worker-new-udpate
 
-
 Edit config.json file
 
 Copy
@@ -26,7 +25,7 @@ Copy & Paste Inside
 
 Change WalletName and Seedphrase
 
-Copy
+```
 {
     "wallet": {
         "addressKeyName": "WalletName",
@@ -75,7 +74,7 @@ Copy
         }
     ]
 }
-
+```
 Export Variables
 
 run command
