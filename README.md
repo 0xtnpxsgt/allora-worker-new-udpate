@@ -1,82 +1,94 @@
-# Walkthrough: Deploying a Hugging Face Model as a Worker Node on the Allora Network
+Installation Setup
 
-This guide provides a step-by-step process to deploy a Hugging Face model as a Worker Node within the [Allora Network](https://docs.allora.network/). By following these instructions, you will be able to integrate and run models from Hugging Face, contributing to the Allora decentralized machine intelligence ecosystem.
+You should buy VPS which is fulfilling all these requirements :
 
-See [complete walkthrough and instructions here](https://docs.allora.network/devs/workers/walkthroughs/walkthrough-hugging-face-worker).
+Full Documentatio: https://docs.allora.network/devs/workers/walkthroughs/walkthrough-price-prediction-worker
 
----
-## Components
+# System requirements
+Copy
+Operating System : Ubuntu 22.04
+CPU: Minimum of 1/2 core.
+Memory: 2 to 4 GB.
+Storage: SSD or NVMe with at least 5GB of space.
+Clone repository 
 
-- **Worker**: The node that publishes inferences to the Allora chain.
-- **Inference**: A container that conducts inferences, maintains the model state, and responds to internal inference requests via a Flask application. This node operates with a basic linear regression model for price predictions.
+Copy
+cd $HOME
+git clone https://github.com/0xtnpxsgt/allora-worker-new-udpate.git
+cd allora-worker-new-udpate
 
-Check the `docker-compose.yml` file for the detailed setup of each component.
 
-## Docker-Compose Setup
+Edit config.json file
 
-A complete working example is provided in the `docker-compose.yml` file.
+Copy
+ nano config.json
+Copy & Paste Inside
 
-### Steps to Setup
+Change WalletName and Seedphrase
 
-1. **Clone the Repository**
-2. **Copy and Populate Configuration**
-    
-    Copy the example configuration file and populate it with your variables:
-    ```sh
-    cp config.example.json config.json
-    ```
+Copy
+{
+    "wallet": {
+        "addressKeyName": "WalletName",
+        "addressRestoreMnemonic": "SeedPhrase",
+        "alloraHomeDir": "",
+        "gas": "auto",
+        "gasAdjustment": 1.2,
+        "gasPrices": "10",
+        "gasPriceUpdateInterval": 60,
+        "maxFees": 25000000,
+        "nodeRpc": "https://allora-rpc.testnet.allora.network",
+        "maxRetries": 5,
+        "retryDelay": 3,
+        "accountSequenceRetryDelay": 5,
+        "submitTx": true,
+        "blockDurationEstimated": 10,
+        "windowCorrectionFactor": 0.8
+    },
+    "worker": [
+        {
+            "topicId": 1,
+            "inferenceEntrypointName": "apiAdapter",
+            "loopSeconds": 2,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 2,
+            "inferenceEntrypointName": "apiAdapter",
+            "loopSeconds": 4,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        },
+        {
+            "topicId": 7,
+            "inferenceEntrypointName": "apiAdapter",
+            "loopSeconds": 6,
+            "parameters": {
+                "InferenceEndpoint": "http://inference:8000/inference/{Token}",
+                "Token": "ETH"
+            }
+        }
+    ]
+}
 
-3. **Initialize Worker**
-    
-    Run the following commands from the project's root directory to initialize the worker:
-    ```sh
-    chmod +x init.config
-    ./init.config
-    ```
-    These commands will:
-    - Automatically create Allora keys for your worker.
-    - Export the needed variables from the created account to be used by the worker node, bundle them with your provided `config.json`, and pass them to the node as environment variables.
+Export Variables
 
-4. **Faucet Your Worker Node**
-    
-    You can find the offchain worker node's address in `./worker-data/env_file` under `ALLORA_OFFCHAIN_ACCOUNT_ADDRESS`. [Add faucet funds](https://docs.allora.network/devs/get-started/setup-wallet#add-faucet-funds) to your worker's wallet before starting it.
+run command
+Copy
+chmod +x init.config
+./init.config 
+Deploy the Node
+run command
+Copy
+docker compose pull
+docker compose up --build -d
+to check logs 
 
-5. **Start the Services**
-    
-    Run the following command to start the worker node, inference, and updater nodes:
-    ```sh
-    docker compose up --build
-    ```
-    To confirm that the worker successfully sends the inferences to the chain, look for the following log:
-    ```
-    {"level":"debug","msg":"Send Worker Data to chain","txHash":<tx-hash>,"time":<timestamp>,"message":"Success"}
-    ```
-
-## Testing Inference Only
-
-This setup allows you to develop your model without the need to bring up the offchain worker. To test the inference model only:
-
-1. Run the following command to start the inference node:
-    ```sh
-    docker compose up --build inference
-    ```
-
-2. Send requests to the inference model. For example, request ETH price inferences:
-    
-    ```sh
-    curl http://127.0.0.1:8000/inference/ETH
-    ```
-    Expected response:
-    ```json
-    {"value":"2564.021586281073"}
-    ```
-
-3. Update the node's internal state (download pricing data, train, and update the model):
-    
-    ```sh
-    curl http://127.0.0.1:8000/update
-    ```
-    Expected response:
-    ```sh
-    0
-    ```
+run command
+Copy
+docker compose logs -f worker
