@@ -1,0 +1,6 @@
+flask[async]==2.3.2
+gunicorn[gthread]==20.1.0
+pandas==1.5.3
+python-dotenv==1.0.0
+retrying==1.3.3
+requests==2.31.0  # or whatever the latest version is

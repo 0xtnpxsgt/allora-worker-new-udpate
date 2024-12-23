@@ -1,129 +1,82 @@
-# Allora-3-Workers-New-Udpate 
-(Topic used: ETH Topic 1 - 2 - 7)
+# Walkthrough: Deploying a Hugging Face Model as a Worker Node on the Allora Network
 
-- You must need to buy a VPS for running Allora Worker
-- You can buy from : Contabo
-- You should buy VPS which is fulfilling all these requirements : 
-```bash
-Operating System : Ubuntu 22.04
-CPU: Minimum of 1/2 core.
-Memory: 2 to 4 GB.
-Storage: SSD or NVMe with at least 5GB of space.
-```
-# Prerequisites
-Before you start, ensure you have docker compose installed.
-```bash
-# Install Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+This guide provides a step-by-step process to deploy a Hugging Face model as a Worker Node within the [Allora Network](https://docs.allora.network/). By following these instructions, you will be able to integrate and run models from Hugging Face, contributing to the Allora decentralized machine intelligence ecosystem.
 
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+See [complete walkthrough and instructions here](https://docs.allora.network/devs/workers/walkthroughs/walkthrough-hugging-face-worker).
 
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
-docker version
+---
+## Components
 
-# Install Docker-Compose
-VER=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep tag_name | cut -d '"' -f 4)
+- **Worker**: The node that publishes inferences to the Allora chain.
+- **Inference**: A container that conducts inferences, maintains the model state, and responds to internal inference requests via a Flask application. This node operates with a basic linear regression model for price predictions.
 
-curl -L "https://github.com/docker/compose/releases/download/"$VER"/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+Check the `docker-compose.yml` file for the detailed setup of each component.
 
-chmod +x /usr/local/bin/docker-compose
-docker-compose --version
+## Docker-Compose Setup
 
-# Docker Permission to user
-sudo groupadd docker
-sudo usermod -aG docker $USER
-```
-### Deployment - Read Carefully! 
-## Step 1: 
-```bash
-git clone https://github.com/allora-network/basic-coin-prediction-node
-```
-## Step 2: 
-```bash
-cd basic-coin-prediction-node
-```
-## Step 3: Copy and Populate Configuration 
-```bash
-cp config.example.json config.json
-```
-## Step 4: 
-Edit addressKeyName & addressRestoreMnemonic & Copy / Paste inside config.json
-```bash
-sudo rm -rf config.json && sudo nano config.json
-```
-```bash
-{
-  "wallet": {
-    "addressKeyName": "YOUR_WALLET_NAME",
-    "addressRestoreMnemonic": "SEED_PHASE",
-    "alloraHomeDir": "",
-    "gas": "1000000",
-    "gasAdjustment": 1.0,
-    "nodeRpc": "https://sentries-rpc.testnet-1.testnet.allora.network/",
-    "maxRetries": 1,
-    "delay": 1,
-    "submitTx": false
-  },
-  "worker": [
-    {
-      "topicId": 1,
-      "inferenceEntrypointName": "api-worker-reputer",
-      "loopSeconds": 5,
-      "parameters": {
-        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
-        "Token": "ETH"
-      }
-    },
-    {
-      "topicId": 2,
-      "inferenceEntrypointName": "api-worker-reputer",
-      "loopSeconds": 5,
-      "parameters": {
-        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
-        "Token": "ETH"
-      }
-    },
-    {
-      "topicId": 7,
-      "inferenceEntrypointName": "api-worker-reputer",
-      "loopSeconds": 5,
-      "parameters": {
-        "InferenceEndpoint": "http://localhost:8000/inference/{Token}",
-        "Token": "ETH"
-      }
-    }
-  ]
-}
+A complete working example is provided in the `docker-compose.yml` file.
 
+### Steps to Setup
 
-```
+1. **Clone the Repository**
+2. **Copy and Populate Configuration**
+    
+    Copy the example configuration file and populate it with your variables:
+    ```sh
+    cp config.example.json config.json
+    ```
 
-## Step 5: Export Variables
-```bash
-chmod +x init.config
-./init.config
-```
-## Step 9: Docker Build - This will take time
+3. **Initialize Worker**
+    
+    Run the following commands from the project's root directory to initialize the worker:
+    ```sh
+    chmod +x init.config
+    ./init.config
+    ```
+    These commands will:
+    - Automatically create Allora keys for your worker.
+    - Export the needed variables from the created account to be used by the worker node, bundle them with your provided `config.json`, and pass them to the node as environment variables.
 
-```bash
-docker compose up --build
-```
+4. **Faucet Your Worker Node**
+    
+    You can find the offchain worker node's address in `./worker-data/env_file` under `ALLORA_OFFCHAIN_ACCOUNT_ADDRESS`. [Add faucet funds](https://docs.allora.network/devs/get-started/setup-wallet#add-faucet-funds) to your worker's wallet before starting it.
 
-if the logs shows like this, then your allora worker is running successfully. 
+5. **Start the Services**
+    
+    Run the following command to start the worker node, inference, and updater nodes:
+    ```sh
+    docker compose up --build
+    ```
+    To confirm that the worker successfully sends the inferences to the chain, look for the following log:
+    ```
+    {"level":"debug","msg":"Send Worker Data to chain","txHash":<tx-hash>,"time":<timestamp>,"message":"Success"}
+    ```
 
-<img width="1535" alt="Screenshot 1403-05-23 at 7 21 56 PM" src="https://github.com/user-attachments/assets/602d31d0-48b4-4666-bf55-feaa3d2ab3ff">
+## Testing Inference Only
 
-## Testing
-```bash
-curl http://localhost:8000/inference/<token>
-```
+This setup allows you to develop your model without the need to bring up the offchain worker. To test the inference model only:
 
-Congrats!
+1. Run the following command to start the inference node:
+    ```sh
+    docker compose up --build inference
+    ```
 
+2. Send requests to the inference model. For example, request ETH price inferences:
+    
+    ```sh
+    curl http://127.0.0.1:8000/inference/ETH
+    ```
+    Expected response:
+    ```json
+    {"value":"2564.021586281073"}
+    ```
 
-
-
-
-
-
+3. Update the node's internal state (download pricing data, train, and update the model):
+    
+    ```sh
+    curl http://127.0.0.1:8000/update
+    ```
+    Expected response:
+    ```sh
+    0
+    ```
