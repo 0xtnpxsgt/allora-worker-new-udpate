@@ -1,4 +1,4 @@
-Installation Setup
+# Installation Setup
 
 You should buy VPS which is fulfilling all these requirements :
 
@@ -78,13 +78,12 @@ cd allora-worker-new-udpate
 ```
 - Export Variables
 
-- run command
 ```
 chmod +x init.config
 ./init.config 
 ```
 - Deploy the Node
-- run command
+
 ```
 docker compose pull
 docker compose up --build -d
